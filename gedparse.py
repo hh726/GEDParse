@@ -1,8 +1,9 @@
 from prettytable import PrettyTable
 from datetime import datetime
+from pprint import pprint
 
 #Reads GED file and store input
-with open('input.ged', 'r') as my_file:
+with open('family.ged', 'r') as my_file:
     content = my_file.readlines()
     my_file.close()
 
@@ -160,6 +161,7 @@ for line in parsed_lines:
         member_dict["Spouse"] = split_line[3]
 if current_member:
     individuals_list.append(member_dict)
+
 #Returns one row of an individual
 def fill_individuals_table(individual):
     returnlist = []
@@ -254,7 +256,38 @@ with open("tables.txt", "w") as tables:
 
     tables.close()
 
+print(individual_table)
+print(families_table)
 
 
+# Marriage before death
+def check_marriage_before_death():
+    for person in individuals_list:
+        death = person["Death"]
+        spouse = person["Spouse"]
+        if spouse != "N/A" and death != "N/A":
+            for couple in families_list:
+                if spouse == couple["ID"]:
+                    if couple["Married"] > death:
+                        print("ERROR: FAMILY: US05: 62: " + couple["ID"] +": Married " + couple["Married"] + " after " + ("Husband's " + couple["Husband ID"] + " death on " + death) if person["Gender"] == "M" else ("Wife's " + couple["Wife ID"] + "death on " + death))
+    return
+
+def check_divorce_before_death():
+    for person in individuals_list:
+        death = person["Death"]
+        spouse = person["Spouse"]
+        if spouse != "N/A" and death != "N/A":
+            for couple in families_list:
+                if spouse == couple["ID"]:
+                    # if couple["Divorced"] != "N/A":
+                        if couple["Divorced"] > death:
+                            print("ERROR: FAMILY: US06: 77: " + couple["ID"] +": Divorced " + couple["Divorced"] + " after " + ("Husband's " + couple["Husband ID"] + " death on " + death) if person["Gender"] == "M" else ("Wife's " + couple["Wife ID"] + "death on " + death))
+    return
 
 
+def error_check_tables():
+    check_marriage_before_death()
+    check_divorce_before_death()
+    return
+
+error_check_tables()
