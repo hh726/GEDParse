@@ -2,13 +2,13 @@
 |  ID  |        Name       | Gender |  Birthday  | Age | Alive |   Death   | Child | Spouse |
 +------+-------------------+--------+------------+-----+-------+-----------+-------+--------+
 | @I1@ |   Henry /Huang/   |   M    | 1999-02-1  |  21 |  True |     NA    |  @F1@ |  N/A   |
-| @I2@ |   Joseph /Huang/  |   M    | 1969-08-11 |  50 | False | 1990-01-1 |  N/A  |  @F1@  |
-| @I3@ |    Karen /Chen/   |   F    | 1971-03-7  |  48 | False | 1994-01-1 |  @F2@ |  @F1@  |
+| @I2@ |   Joseph /Huang/  |   M    | 2000-08-11 |  19 | False | 1990-01-1 |  N/A  |  @F1@  |
+| @I3@ |    Karen /Chen/   |   F    | 2000-03-7  |  19 | False | 1994-01-1 |  @F2@ |  @F1@  |
 | @I4@ |   Shelly /Huang/  |   F    | 1994-05-1  |  25 |  True |     NA    |  @F1@ |  N/A   |
 | @I5@ |     Sara /Liu/    |   F    | 1952-09-5  |  67 |  True |     NA    |  N/A  |  @F3@  |
-| @I6@ |   Robert /Chen/   |   M    | 1950-05-2  |  69 | False | 1969-01-1 |  N/A  |  @F2@  |
-| @I7@ |    John /Smith/   |   M    | 1950-06-4  |  69 | False | 1969-06-3 |  N/A  |  @F3@  |
-| @I8@ | Christopher /Liu/ |   M    | 1968-09-5  |  51 | False | 1992-01-1 |  @F3@ |  @F4@  |
+| @I6@ |   Robert /Chen/   |   M    | 1980-05-2  |  39 | False | 1969-01-1 |  N/A  |  @F2@  |
+| @I7@ |    John /Smith/   |   M    | 1985-06-4  |  34 | False | 1969-06-3 |  N/A  |  @F3@  |
+| @I8@ | Christopher /Liu/ |   M    | 1996-09-5  |  23 | False | 1992-01-1 |  @F3@ |  @F4@  |
 | @I9@ |  Victoria /Smith/ |   F    | 1970-08-4  |  49 | False | 1996-01-1 |  N/A  |  @F4@  |
 +------+-------------------+--------+------------+-----+-------+-----------+-------+--------++------+-----------+-----------+------------+-------------------+---------+------------------+------------+
 |  ID  |  Married  |  Divorced | Husband ID |    Husband Name   | Wife ID |    Wife Name     |  Children  |

@@ -250,13 +250,39 @@ def main():
 	with open("tables.txt", "w") as tables:
 	    tables.write(str(individual_table))
 	    tables.write(str(families_table))
-
 	    tables.close()
 
 	print(individual_table)
 	print(families_table)
 	return error_check_tables()
 
+#Birth before death
+def check_birth_before_death(arr):
+	for person in individuals_list:
+		death = person["Death"]
+		birth = person["Birthday"]
+		person_id = person["ID"]
+		if death == "N/A":
+			continue
+		if death < birth:
+			err = f"ERROR: INDIVIDUAL: US03: 9: {person_id}: Died {death} before born {birth}"
+			print(err)
+			arr.append(err)
+	return arr
+
+# Marriage before divorce
+def check_marriage_before_divorce(arr):
+	for couple in families_list:
+		marriage = couple["Married"]
+		divorce = couple["Divorced"]
+		family_id = couple["ID"]
+		if divorce == "N/A":
+			continue
+		if divorce < marriage:
+			err = f"ERROR: FAMILY: US04: 45: {family_id}: Divorced {divorce} before married {marriage}"
+			print(err)
+			arr.append(err)
+	return arr
 
 # Marriage before death
 def check_marriage_before_death(arr):
@@ -298,4 +324,6 @@ def check_divorce_before_death(arr):
 def error_check_tables():
     a = check_marriage_before_death([])
     b = check_divorce_before_death([])
-    return a, b
+    c = check_birth_before_death([])
+    d = check_marriage_before_divorce([])
+    return a, b, c, d
