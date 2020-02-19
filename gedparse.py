@@ -1,5 +1,5 @@
 from prettytable import PrettyTable
-from datetime import datetime
+from datetime import datetime, date
 from pprint import pprint
 
 #Stores all tags
@@ -255,6 +255,58 @@ def main():
 	print(individual_table)
 	print(families_table)
 	return error_check_tables()
+#Date before current date
+def check_dates_before_today(arr):
+    today = str(date.today())
+    for person in individuals_list:
+        death = person["Death"]
+        birth = person["Birthday"]
+        person_id = person["ID"]
+        if birth > today:    
+            err = f"ERROR: INDIVIDUAL: US01: 9: {person_id}: Birthday {birth} occurs in the future"   
+            print(err)
+            arr.append(err)    
+        elif death == "NA":
+            continue
+        elif death > today:
+            err = f"ERROR: INDIVIDUAL: US01: 9: {person_id}: Death {death} occurs in the future"
+            print(err)
+            arr.append(err)
+    for couple in families_list:
+        family_id = couple["ID"]
+        marriage = couple["Married"]
+        divorce = couple["Divorced"]
+        if marriage > today:
+            err = f"ERROR: FAMILY: US01: 9: {family_id}: Marriage {marriage} occurs in the future"
+            print(err)
+            arr.append(err)
+        if divorce == "N/A":
+            continue
+        if divorce > today:
+            err = f"ERROR: FAMILY: US01: 9: {family_id}: Divorce {divorce} occurs in the future"
+            print(err)
+            arr.append(err)
+    return arr
+#Born before marriage
+def check_birth_before_marriage(arr):
+    for person in individuals_list:
+        birth = person["Birthday"]
+        for couple in families_list:
+            family_id = couple["ID"]
+            marriage = couple["Married"]
+            if marriage == "N/A":
+                continue
+            if marriage < birth:
+                err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
+                if(person["Gender"] == "M"):
+                    err = err + f"Husband's birth date {birth} after marriage date {marriage}"
+                else:
+                    err = err + f"Wife's birth date {birth} after marriage date {marriage}"
+                    print(err)
+                    arr.append(err)
+    return arr
+
+
 
 #Birth before death
 def check_birth_before_death(arr):
@@ -326,4 +378,6 @@ def error_check_tables():
     b = check_divorce_before_death([])
     c = check_birth_before_death([])
     d = check_marriage_before_divorce([])
-    return a, b, c, d
+    e = check_dates_before_today([])
+    f = check_birth_before_marriage([])
+    return a, b, c, d, e

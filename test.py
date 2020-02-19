@@ -1,7 +1,7 @@
-from gedparse import main, check_divorce_before_death, check_marriage_before_death
+from gedparse import main, check_divorce_before_death, check_marriage_before_death, check_dates_before_today
 from pprint import pprint
 
-marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors = main()
+marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors= main()
 
 #Lachlan
 def mbd1():
@@ -38,6 +38,19 @@ def bbd4():
 def bbd5():
 	assert "ERROR: INDIVIDUAL: US03: 9: @I8@: Died 1992-01-1 before born 1996-09-5" in birth_before_death_errors
 
+#Jess
+def cd1():
+	assert "ERROR: INDIVIDUAL: US01: 9: @I1@: Birthday 2021-02-1 occurs in the future" in dates_before_today_errors
+def cd2():
+	assert "ERROR: INDIVIDUAL: US01: 9: @I4@: Death 2022-01-1 occurs in the future" in dates_before_today_errors
+def cd3():
+	assert "ERROR: FAMILY: US01: 9: @F3@: Marriage 2021-09-7 occurs in the future" in dates_before_today_errors
+def cd4():
+	assert "ERROR: FAMILY: US01: 9: @F3@: Divorce 2022-01-1 occurs in the future" in dates_before_today_errors
+def cd5():
+	assert "ERROR: INDIVIDUAL: US01: 9: @I5@: Birthday 2021-09-5 occurs in the future" in dates_before_today_errors
+
+
 mbd1()
 mbd2()
 mbd3()
@@ -49,3 +62,8 @@ bbd2()
 bbd3()
 bbd4()
 bbd5()
+cd1()
+cd2()
+cd3()
+cd4()
+cd5()
