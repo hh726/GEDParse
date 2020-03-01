@@ -1,6 +1,8 @@
 from prettytable import PrettyTable
 from datetime import datetime, date
 from pprint import pprint
+from dateutil import relativedelta
+
 
 #Stores all tags
 ZERO_LEVEL = ["INDI", "FAM", "HEAD", "TRLR", "NOTE"]
@@ -77,7 +79,7 @@ def check_format(line):
     return 3
 
 #Reads GED file and store input
-with open('testInput.ged', 'r') as my_file:
+with open('Input.ged', 'r') as my_file:
     content = my_file.readlines()
     my_file.close()
 
@@ -287,6 +289,7 @@ def check_dates_before_today(arr):
             print(err)
             arr.append(err)
     return arr
+    
 #Born before marriage
 def check_birth_before_marriage(arr):
     for person in individuals_list:
@@ -372,12 +375,40 @@ def check_divorce_before_death(arr):
 						arr.append(err)
 	return arr
 
+def check_age_less_than_150(arr):
+	for person in individuals_list:
+		birthday = person["Birthday"]
+		birthday = datetime.strptime(birthday, '%Y-%m-%d').date()
+		age = (relativedelta.relativedelta(date.today(), birthday)).years
+		if(age > 150):
+			error_msg = "ERROR: INDIVIDUAL: US07: 90: " + person["ID"] + ": More than 150 years old - Birth date " + person["Birthday"]
+			arr.append(error_msg)
+			print(error_msg)
+	return arr
+
+def check_birth_before_parents_marriage(arr):
+	for family in families_list:
+		if family["Children"]:
+			children = (family["Children"].strip()).split(" ")
+			for person in individuals_list:
+				if person["ID"] in children:
+					childsBirthday = datetime.strptime(person["Birthday"], '%Y-%m-%d').date()
+					parentsMarriage = datetime.strptime(family["Married"], '%Y-%m-%d').date()
+					if childsBirthday < parentsMarriage:
+						error_msg = "ANOMALY: FAMILY: US08: 107: " + family["ID"] + ": Child " + person["ID"] + " born " + person["Birthday"] + " before marriage on " + family["Married"] 
+						arr.append(error_msg)
+						print(error_msg)
+	return arr
 
 def error_check_tables():
-    a = check_marriage_before_death([])
-    b = check_divorce_before_death([])
-    c = check_birth_before_death([])
-    d = check_marriage_before_divorce([])
-    e = check_dates_before_today([])
-    f = check_birth_before_marriage([])
-    return a, b, c, d, e
+	a = check_marriage_before_death([])
+	b = check_divorce_before_death([])
+	c = check_birth_before_death([])
+	d = check_marriage_before_divorce([])
+	e = check_dates_before_today([])
+	f = check_birth_before_marriage([])
+	g = check_age_less_than_150([])
+	h = check_birth_before_parents_marriage([])
+	return a, b, c, d, e, f, g, h
+	
+main()

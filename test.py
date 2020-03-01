@@ -1,7 +1,7 @@
 from gedparse import main, check_divorce_before_death, check_marriage_before_death, check_dates_before_today
 from pprint import pprint
 
-marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors= main()
+marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage = main()
 
 #Lachlan
 def mbd1():
@@ -50,6 +50,26 @@ def cd4():
 def cd5():
 	assert "ERROR: INDIVIDUAL: US01: 9: @I5@: Birthday 2021-09-5 occurs in the future" in dates_before_today_errors
 
+# -------------------------------------- Sprint 2 ------------------------------------------- #
+
+#Lachlan
+
+def ca1501():
+	assert "ERROR: INDIVIDUAL: US07: 86: @I3@: More than 150 years old - Brith date 1771-03-7" in age_less_than_150
+
+def ca1502():
+	assert "ERROR: INDIVIDUAL: US07: 90: @I9@: More than 150 years old - Birth date 1270-08-4" in age_less_than_150
+
+def ca1503():
+	assert "ERROR: INDIVIDUAL: US07: 90: @I1@: More than 150 years old - Birth date 1859-02-1" in age_less_than_150
+
+def bbm1():
+	"ANOMALY: FAMILY: US08: 107: @F1@: Child @I1@ born 1859-02-1 before marriage on 1994-07-7" in birth_before_parents_marriage
+
+def bbm2():
+	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
+
+
 
 mbd1()
 mbd2()
@@ -67,3 +87,8 @@ cd2()
 cd3()
 cd4()
 cd5()
+ca1501()
+ca1502()
+ca1503()
+bbm1()
+bbm2()
