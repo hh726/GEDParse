@@ -1,8 +1,8 @@
-from gedparse import marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage, main
+from gedparse import main
 from pprint import pprint
 
-# marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage = main()
-main()
+marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage = main()
+
 
 #Lachlan
 def mbd1():
@@ -69,7 +69,6 @@ def cd5():
 
 # def bbm2():
 # 	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
-
 
 
 mbd1()
