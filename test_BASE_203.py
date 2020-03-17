@@ -1,15 +1,14 @@
-from gedparse import main
+from gedparse import main, check_divorce_before_death, check_marriage_before_death, check_dates_before_today
 from pprint import pprint
 
 marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage = main()
 
-
 #Lachlan
 def mbd1():
-	assert "ERROR: FAMILY: US05: 62: @F2@: Married 1970-10-4 after Husband's @I6@ death on 1969-01-1" in marriage_before_death_errors
+	assert "ERROR: FAMILY: US05: 62: @F1@: Married 1994-07-7 after Husband's @I2@ death on 1990-01-1" in marriage_before_death_errors
 
 def mbd2():
-	assert "ERROR: FAMILY: US05: 62: @F4@: Married 1993-06-9 after Husband's @I8@ death on 1992-01-1" in marriage_before_death_errors
+	assert "ERROR: FAMILY: US05: 62: @F2@: Married 1970-10-4 after Husband's @I6@ death on 1969-01-1" in marriage_before_death_errors
 
 def mbd3():
 	assert "ERROR: FAMILY: US05: 62: @F4@: Married 1993-06-9 after Husband's @I8@ death on 1992-01-1" in marriage_before_death_errors
@@ -56,22 +55,20 @@ def cd5():
 #Lachlan
 
 def ca1501():
-	assert "ERROR: INDIVIDUAL: US07: 90: @I10@: More than 150 years old - Birth date 1500-01-1" in age_less_than_150
+	assert "ERROR: INDIVIDUAL: US07: 86: @I3@: More than 150 years old - Brith date 1771-03-7" in age_less_than_150
 
 def ca1502():
-	assert "ERROR: INDIVIDUAL: US07: 90: @I11@: More than 150 years old - Birth date 1500-02-2" in age_less_than_150
+	assert "ERROR: INDIVIDUAL: US07: 90: @I9@: More than 150 years old - Birth date 1270-08-4" in age_less_than_150
 
 def ca1503():
-	assert "ERROR: INDIVIDUAL: US07: 90: @I12@: More than 150 years old - Birth date 1500-03-3" in age_less_than_150
+	assert "ERROR: INDIVIDUAL: US07: 90: @I1@: More than 150 years old - Birth date 1859-02-1" in age_less_than_150
 
 def bbm1():
-	assert "ANOMALY: FAMILY: US08: 107: @F1@: Child @I4@ born 1994-05-1 before marriage on 1994-07-7" in birth_before_parents_marriage
+	"ANOMALY: FAMILY: US08: 107: @F1@: Child @I1@ born 1859-02-1 before marriage on 1994-07-7" in birth_before_parents_marriage
 
 def bbm2():
-	assert "ANOMALY: FAMILY: US08: 107: @F3@: Child @I8@ born 1996-09-5 before marriage on 2021-09-7" in birth_before_parents_marriage
+	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
 
-# def bbm2():
-# 	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
 
 
 mbd1()

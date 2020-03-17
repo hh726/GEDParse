@@ -10,10 +10,12 @@ ONE_LEVEL = ["NAME", "SEX", "BIRT", "DEAT", "FAMC", "FAMS", "MARR", "HUSB", "WIF
              "CHIL", "DIV"]
 TWO_LEVEL = ["DATE"]
 
+# Variables used to indentify individuals. individuals_list is a list of dictionaries containing the attributes listed in the field names below
 individual_table = PrettyTable()
 individual_table.field_names = ["ID", "Name", "Gender", "Birthday", "Age", "Alive", "Death", "Child", "Spouse"]
 individuals_list = []
 
+# Variables used to indentify families. families_list is a list of dictionaries containing the attributes listed in the field names below
 families_table = PrettyTable()
 families_table.field_names = ["ID", "Married", "Divorced", "Husband ID", "Husband Name", "Wife ID", "Wife Name", "Children"]
 families_list = []
@@ -79,7 +81,7 @@ def check_format(line):
     return 3
 
 #Reads GED file and store input
-with open('Input.ged', 'r') as my_file:
+with open('testInput2.ged', 'r') as my_file:
     content = my_file.readlines()
     my_file.close()
 
@@ -133,130 +135,6 @@ def fill_families_table(family):
     returnlist.append(family["Children"])
     return returnlist
 
-
-def main():
-	#Writes parsed inputs to a file
-	with open('results.txt', 'w') as result_file:
-	    for line in content:
-	        result_file.write(f"--> {line.rstrip()} \n")
-	        result_file.write(parse_number(line) + "\n")
-	    result_file.close()
-
-	#Opens and read parsed output file
-	with open('results.txt', 'r') as file:
-	    lines = file.readlines()
-	    file.close()
-
-	parsed_lines = store_parsed_lines(lines)
-
-	#Pretty ugly code to parse string into the individuals table
-	parse_birthday = False
-	parse_deathdate = False
-	current_member = None
-	for line in parsed_lines:
-	    split_line = line.split("|")
-	    if split_line[1] == "INDI":
-	        if current_member:
-	            individuals_list.append(member_dict)
-	        current_member = split_line[3]
-	        member_dict = {"ID": current_member}
-	        member_dict["Child"] = "N/A"
-	        member_dict["Spouse"] = "N/A"
-	        
-	    if split_line[1] == "NAME":
-	        member_dict["Name"] = split_line[3]
-	    if split_line[1] == "SEX":
-	        member_dict["Gender"] = split_line[3]
-	    if split_line[1] == "BIRT":
-	        parse_birthday = True
-	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_birthday == True:
-	        birthdate = parse_date(split_line[3])
-	        member_dict["Birthday"] = birthdate
-	        member_dict["Age"] = calculate_age(birthdate)
-	        parse_birthday = False
-
-	        member_dict["Alive"] = "True"
-	        member_dict["Death"] = "NA"
-	        
-	    if split_line[1] == "DEAT":
-	        parse_deathdate = True
-	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_deathdate == True:
-	        deathdate = parse_date(split_line[3])
-	        member_dict["Alive"] = "False"
-	        member_dict["Death"] = deathdate
-	        parse_deathdate = False
-	    if split_line[1] == "FAMC":
-	        member_dict["Child"] = split_line[3]
-	    if split_line[1] == "FAMS":
-	        member_dict["Spouse"] = split_line[3]
-	if current_member:
-	    individuals_list.append(member_dict)
-
-	#Puts the rows into the individuals table
-	for person in individuals_list:
-	    individual_table.add_row(fill_individuals_table(person))
-
-	parse_marriage = False
-	parse_divorce = False
-	current_family = None
-	for line in parsed_lines:
-	    split_line = line.split("|")
-	    if split_line[1] == "FAM":
-	        if current_family:
-	            families_list.append(family_dict)
-	        current_family = split_line[3]
-	        family_dict = {"ID": current_family}
-	        children_lst = []
-	        member_dict["Married"] = "N/A"
-	        member_dict["Divorced"] = "N/A"
-	    if split_line[1] == "HUSB":
-	        family_dict["Husband ID"] = split_line[3]
-	        for person in individuals_list:
-	            if person["ID"] == split_line[3]:
-	                family_dict["Husband Name"] = person["Name"]
-	    if split_line[1] == "WIFE":
-	        family_dict["Wife ID"] = split_line[3]
-	        for person in individuals_list:
-	            if person["ID"] == split_line[3]:
-	                family_dict["Wife Name"] = person["Name"]
-	    if split_line[1] == "CHIL":
-	        for person in individuals_list:
-	            if person["ID"] == split_line[3]:
-	                children_lst.append(person["ID"])
-	    if split_line[1] == "MARR":
-	        string = ""
-	        for child in children_lst:
-	            string += child + " "
-	        family_dict["Children"] = string
-	        parse_marriage = True
-	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_marriage == True:
-	        marriage = parse_date(split_line[3])
-	        family_dict["Married"] = marriage
-	        parse_marriage = False
-	        family_dict["Divorced"] = "N/A"
-	        
-	    if split_line[1] == "DIV":
-	        parse_divorce = True
-	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_divorce == True:
-	        divorce = parse_date(split_line[3])
-	        family_dict["Divorced"] = divorce
-	        parse_divorce = False
-
-
-	if current_family:
-	    families_list.append(family_dict)
-
-	for family in families_list:
-	    families_table.add_row(fill_families_table(family))
-
-	with open("tables.txt", "w") as tables:
-	    tables.write(str(individual_table))
-	    tables.write(str(families_table))
-	    tables.close()
-
-	print(individual_table)
-	print(families_table)
-	return error_check_tables()
 #Date before current date
 def check_dates_before_today(arr):
     today = str(date.today())
@@ -401,14 +279,139 @@ def check_birth_before_parents_marriage(arr):
 	return arr
 
 def error_check_tables():
-	a = check_marriage_before_death([])
-	b = check_divorce_before_death([])
-	c = check_birth_before_death([])
-	d = check_marriage_before_divorce([])
-	e = check_dates_before_today([])
-	f = check_birth_before_marriage([])
-	g = check_age_less_than_150([])
-	h = check_birth_before_parents_marriage([])
-	return a, b, c, d, e, f, g, h
-	
-main()
+	cmbd = check_marriage_before_death([])
+	cdbf = check_divorce_before_death([])
+	cbbd = check_birth_before_death([])
+	cmbdv = check_marriage_before_divorce([])
+	cdbt = check_dates_before_today([])
+	cbbm = check_birth_before_marriage([])
+	calt150 = check_age_less_than_150([])
+	cbbpm = check_birth_before_parents_marriage([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm
+
+
+def main():
+	#Writes parsed inputs to a file
+	with open('results.txt', 'w') as result_file:
+	    for line in content:
+	        result_file.write(f"--> {line.rstrip()} \n")
+	        result_file.write(parse_number(line) + "\n")
+	    result_file.close()
+
+	#Opens and read parsed output file
+	with open('results.txt', 'r') as file:
+	    lines = file.readlines()
+	    file.close()
+
+	parsed_lines = store_parsed_lines(lines)
+
+	#Pretty ugly code to parse string into the individuals table
+	parse_birthday = False
+	parse_deathdate = False
+	current_member = None
+	for line in parsed_lines:
+	    split_line = line.split("|")
+	    if split_line[1] == "INDI":
+	        if current_member:
+	            individuals_list.append(member_dict)
+	        current_member = split_line[3]
+	        member_dict = {"ID": current_member}
+	        member_dict["Child"] = "N/A"
+	        member_dict["Spouse"] = "N/A"
+	        
+	    if split_line[1] == "NAME":
+	        member_dict["Name"] = split_line[3]
+	    if split_line[1] == "SEX":
+	        member_dict["Gender"] = split_line[3]
+	    if split_line[1] == "BIRT":
+	        parse_birthday = True
+	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_birthday == True:
+	        birthdate = parse_date(split_line[3])
+	        member_dict["Birthday"] = birthdate
+	        member_dict["Age"] = calculate_age(birthdate)
+	        parse_birthday = False
+
+	        member_dict["Alive"] = "True"
+	        member_dict["Death"] = "NA"
+	        
+	    if split_line[1] == "DEAT":
+	        parse_deathdate = True
+	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_deathdate == True:
+	        deathdate = parse_date(split_line[3])
+	        member_dict["Alive"] = "False"
+	        member_dict["Death"] = deathdate
+	        parse_deathdate = False
+	    if split_line[1] == "FAMC":
+	        member_dict["Child"] = split_line[3]
+	    if split_line[1] == "FAMS":
+	        member_dict["Spouse"] = split_line[3]
+	if current_member:
+	    individuals_list.append(member_dict)
+
+	#Puts the rows into the individuals table
+	for person in individuals_list:
+	    individual_table.add_row(fill_individuals_table(person))
+
+	parse_marriage = False
+	parse_divorce = False
+	current_family = None
+	for line in parsed_lines:
+	    split_line = line.split("|")
+	    if split_line[1] == "FAM":
+	        if current_family:
+	            families_list.append(family_dict)
+	        current_family = split_line[3]
+	        family_dict = {"ID": current_family}
+	        children_lst = []
+	        member_dict["Married"] = "N/A"
+	        member_dict["Divorced"] = "N/A"
+	    if split_line[1] == "HUSB":
+	        family_dict["Husband ID"] = split_line[3]
+	        for person in individuals_list:
+	            if person["ID"] == split_line[3]:
+	                family_dict["Husband Name"] = person["Name"]
+	    if split_line[1] == "WIFE":
+	        family_dict["Wife ID"] = split_line[3]
+	        for person in individuals_list:
+	            if person["ID"] == split_line[3]:
+	                family_dict["Wife Name"] = person["Name"]
+	    if split_line[1] == "CHIL":
+	        for person in individuals_list:
+	            if person["ID"] == split_line[3]:
+	                children_lst.append(person["ID"])
+	    if split_line[1] == "MARR":
+	        string = ""
+	        for child in children_lst:
+	            string += child + " "
+	        family_dict["Children"] = string
+	        parse_marriage = True
+	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_marriage == True:
+	        marriage = parse_date(split_line[3])
+	        family_dict["Married"] = marriage
+	        parse_marriage = False
+	        family_dict["Divorced"] = "N/A"
+	        
+	    if split_line[1] == "DIV":
+	        parse_divorce = True
+	    if split_line[0] == "2" and split_line[1] == "DATE" and parse_divorce == True:
+	        divorce = parse_date(split_line[3])
+	        family_dict["Divorced"] = divorce
+	        parse_divorce = False
+
+
+	if current_family:
+	    families_list.append(family_dict)
+
+	for family in families_list:
+	    families_table.add_row(fill_families_table(family))
+
+	with open("tables.txt", "w") as tables:
+	    tables.write(str(individual_table))
+	    tables.write(str(families_table))
+	    tables.close()
+
+	print(individual_table)
+	print(families_table)
+	return error_check_tables()
+
+# main()
