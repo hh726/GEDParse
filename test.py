@@ -1,7 +1,8 @@
 from gedparse import main, check_divorce_before_death, check_marriage_before_death, check_dates_before_today
 from pprint import pprint
 
-marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors= main()
+marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors,\
+	parents_not_too_old= main()
 
 #Lachlan
 def mbd1():

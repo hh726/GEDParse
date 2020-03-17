@@ -370,7 +370,32 @@ def check_divorce_before_death(arr):
 						arr.append(err)
 	return arr
 
+def check_bigamy(arr):
+	pass
 
+def check_parents_not_too_old(arr):
+	for family in families_list:
+		if family['Children'] != '':
+			children = family['Children'].split(' ')
+			for child in children:
+				if child != '':
+					father_name = family["Husband Name"]
+					mother_name = family["Wife Name"]
+					for person in individuals_list:
+						if person["Name"] == father_name:
+							father_age = person["Age"]
+						if person["Name"] == mother_name:
+							mother_age = person["Age"]
+						if person["ID"] == child:
+							child_age = person["Age"]
+					if father_age - child_age >= 80:
+						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 80 years older than child"
+						print(err)
+						arr.append(err)
+					if mother_age - child_age >= 60:
+						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 60 years older than child"
+						print(err)
+						arr.append(err)
 def error_check_tables():
     a = check_marriage_before_death([])
     b = check_divorce_before_death([])
@@ -378,4 +403,5 @@ def error_check_tables():
     d = check_marriage_before_divorce([])
     e = check_dates_before_today([])
     f = check_birth_before_marriage([])
-    return a, b, c, d, e
+    g = check_parents_not_too_old([])
+    return a, b, c, d, e, g
