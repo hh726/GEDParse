@@ -413,5 +413,158 @@ def main():
 	print(individual_table)
 	print(families_table)
 	return error_check_tables()
+<<<<<<< HEAD
 
 # main()
+=======
+#Date before current date
+def check_dates_before_today(arr):
+    today = str(date.today())
+    for person in individuals_list:
+        death = person["Death"]
+        birth = person["Birthday"]
+        person_id = person["ID"]
+        if birth > today:    
+            err = f"ERROR: INDIVIDUAL: US01: 9: {person_id}: Birthday {birth} occurs in the future"   
+            print(err)
+            arr.append(err)    
+        elif death == "NA":
+            continue
+        elif death > today:
+            err = f"ERROR: INDIVIDUAL: US01: 9: {person_id}: Death {death} occurs in the future"
+            print(err)
+            arr.append(err)
+    for couple in families_list:
+        family_id = couple["ID"]
+        marriage = couple["Married"]
+        divorce = couple["Divorced"]
+        if marriage > today:
+            err = f"ERROR: FAMILY: US01: 9: {family_id}: Marriage {marriage} occurs in the future"
+            print(err)
+            arr.append(err)
+        if divorce == "N/A":
+            continue
+        if divorce > today:
+            err = f"ERROR: FAMILY: US01: 9: {family_id}: Divorce {divorce} occurs in the future"
+            print(err)
+            arr.append(err)
+    return arr
+#Born before marriage
+def check_birth_before_marriage(arr):
+    for person in individuals_list:
+        birth = person["Birthday"]
+        for couple in families_list:
+            family_id = couple["ID"]
+            marriage = couple["Married"]
+            if marriage == "N/A":
+                continue
+            if marriage < birth:
+                err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
+                if(person["Gender"] == "M"):
+                    err = err + f"Husband's birth date {birth} after marriage date {marriage}"
+                else:
+                    err = err + f"Wife's birth date {birth} after marriage date {marriage}"
+                    print(err)
+                    arr.append(err)
+    return arr
+
+
+
+#Birth before death
+def check_birth_before_death(arr):
+	for person in individuals_list:
+		death = person["Death"]
+		birth = person["Birthday"]
+		person_id = person["ID"]
+		if death != "N/A":
+			if death < birth:
+				err = f"ERROR: INDIVIDUAL: US03: 9: {person_id}: Died {death} before born {birth}"
+				print(err)
+				arr.append(err)
+	return arr
+
+# Marriage before divorce
+def check_marriage_before_divorce(arr):
+	for couple in families_list:
+		marriage = couple["Married"]
+		divorce = couple["Divorced"]
+		family_id = couple["ID"]
+		if divorce != "N/A":
+			if divorce < marriage:
+				err = f"ERROR: FAMILY: US04: 45: {family_id}: Divorced {divorce} before married {marriage}"
+				print(err)
+				arr.append(err)
+	return arr
+
+# Marriage before death
+def check_marriage_before_death(arr):
+	for person in individuals_list:
+		death = person["Death"]
+		spouse = person["Spouse"]
+		if spouse != "N/A" and death != "N/A":
+			for couple in families_list:
+				if spouse == couple["ID"]:
+					if couple["Married"] > death:
+						err = "ERROR: FAMILY: US05: 62: " + couple["ID"] +": Married " + couple["Married"] + " after "
+						# ("Husband's " + couple["Husband ID"] + " death on " + death) if (person["Gender"] == "M") else ("Wife's " + couple["Wife ID"] + "death on " + death)
+						if(person["Gender"] == "M"):
+							err = err + "Husband's " + couple["Husband ID"] + " death on " + death
+						else:
+							err = err + "Wife's " + couple["Wife ID"] + " death on " + death
+						print(err)
+						arr.append(err)
+	return arr
+
+def check_divorce_before_death(arr):
+	for person in individuals_list:
+		death = person["Death"]
+		spouse = person["Spouse"]
+		if spouse != "N/A" and death != "N/A":
+			for couple in families_list:
+				if spouse == couple["ID"]:
+					if couple["Divorced"] != "N/A" and couple["Divorced"] > death:
+						err = "ERROR: FAMILY: US06: 77: " + couple["ID"] +": Divorced " + couple["Divorced"] + " after "
+						if(person["Gender"] == "M"):
+							err = err + "Husband's " + couple["Husband ID"] + " death on " + death
+						else:
+							err = err + "Wife's " + couple["Wife ID"] + " death on " + death
+						print(err)
+						arr.append(err)
+	return arr
+
+def check_bigamy(arr):
+	pass
+
+def check_parents_not_too_old(arr):
+	for family in families_list:
+		if family['Children'] != '':
+			children = family['Children'].split(' ')
+			for child in children:
+				if child != '':
+					father_name = family["Husband Name"]
+					mother_name = family["Wife Name"]
+					for person in individuals_list:
+						if person["Name"] == father_name:
+							father_age = person["Age"]
+						if person["Name"] == mother_name:
+							mother_age = person["Age"]
+						if person["ID"] == child:
+							child_age = person["Age"]
+					if father_age - child_age >= 80:
+						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 80 years older than child"
+						print(err)
+						arr.append(err)
+					if mother_age - child_age >= 60:
+						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 60 years older than child"
+						print(err)
+						arr.append(err)
+def error_check_tables():
+    a = check_marriage_before_death([])
+    b = check_divorce_before_death([])
+    c = check_birth_before_death([])
+    d = check_marriage_before_divorce([])
+    e = check_dates_before_today([])
+    f = check_birth_before_marriage([])
+    g = check_parents_not_too_old([])
+    return a, b, c, d, e, g
+>>>>>>> 241ad54374dea8eec7b0b6c9566b445200c7a850
