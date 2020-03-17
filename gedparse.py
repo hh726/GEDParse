@@ -314,12 +314,11 @@ def check_birth_before_death(arr):
 		death = person["Death"]
 		birth = person["Birthday"]
 		person_id = person["ID"]
-		if death == "N/A":
-			continue
-		if death < birth:
-			err = f"ERROR: INDIVIDUAL: US03: 9: {person_id}: Died {death} before born {birth}"
-			print(err)
-			arr.append(err)
+		if death != "N/A":
+			if death < birth:
+				err = f"ERROR: INDIVIDUAL: US03: 9: {person_id}: Died {death} before born {birth}"
+				print(err)
+				arr.append(err)
 	return arr
 
 # Marriage before divorce
@@ -328,12 +327,11 @@ def check_marriage_before_divorce(arr):
 		marriage = couple["Married"]
 		divorce = couple["Divorced"]
 		family_id = couple["ID"]
-		if divorce == "N/A":
-			continue
-		if divorce < marriage:
-			err = f"ERROR: FAMILY: US04: 45: {family_id}: Divorced {divorce} before married {marriage}"
-			print(err)
-			arr.append(err)
+		if divorce != "N/A":
+			if divorce < marriage:
+				err = f"ERROR: FAMILY: US04: 45: {family_id}: Divorced {divorce} before married {marriage}"
+				print(err)
+				arr.append(err)
 	return arr
 
 # Marriage before death
