@@ -1,8 +1,8 @@
 from gedparse import main
 from pprint import pprint
 
-<<<<<<< HEAD
-marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage = main()
+marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage \
+	,parent_not_too_old_errors = main()
 
 
 #Lachlan
@@ -11,19 +11,6 @@ def mbd1():
 
 def mbd2():
 	assert "ERROR: FAMILY: US05: 62: @F4@: Married 1993-06-9 after Husband's @I8@ death on 1992-01-1" in marriage_before_death_errors
-=======
-marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors,\
-	parents_not_too_old= main()
-
-#Lachlan
-def mbd1():
-	assert "ERROR: FAMILY: US05: 62: @F1@: Married 1994-07-7 after Husband's @I2@ death on 1990-01-1" in marriage_before_death_errors
-	print("mbd1 passed")
-
-def mbd2():
-	assert "ERROR: FAMILY: US05: 62: @F2@: Married 1970-10-4 after Husband's @I6@ death on 1969-01-1" in marriage_before_death_errors
-	print("mbd2 passed")
->>>>>>> 241ad54374dea8eec7b0b6c9566b445200c7a850
 
 def mbd3():
 	assert "ERROR: FAMILY: US05: 62: @F4@: Married 1993-06-9 after Husband's @I8@ death on 1992-01-1" in marriage_before_death_errors
