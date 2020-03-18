@@ -301,6 +301,22 @@ def check_parents_not_too_old(arr):
 						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 60 years older than child"
 						print(err)
 						arr.append(err)
+def no_bigamy(arr):
+	dont_touch = []
+	for family1 in families_list:
+		for family2 in families_list:
+			if family1["ID"] != family2["ID"] and family1 not in dont_touch:
+				if family1["Husband Name"] == family2["Husband Name"] or family1["Wife Name"] == family2["Wife Name"]:
+
+					dont_touch.append(family2)
+					family1ID = family1["ID"]
+					family2ID = family2["ID"]
+					if family1["Divorced"] == "N/A" and family2["Divorced"] == "N/A":
+						err = f"ERROR: FAMILY: US13: 32: {family1ID} and {family2ID} has committed bigamy"
+						print(err)
+						arr.append(err)
+
+
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -312,6 +328,7 @@ def error_check_tables():
 	calt150 = check_age_less_than_150([])
 	cbbpm = check_birth_before_parents_marriage([])
 	cpnto = check_parents_not_too_old([])
+	nb = no_bigamy([])
 	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto
 
 
