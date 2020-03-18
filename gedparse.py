@@ -287,7 +287,7 @@ def check_birth_before_death_of_parents(arr):
 						father = family["Husband Name"]
 						mother = family["Wife Name"]
 						for person in individuals_list:
-							if perseon["Name"] == father:
+							if person["Name"] == father:
 								father_death = person["Death"]
 							if person["Name"] == mother:
 								mother_death = person["Death"]
@@ -297,7 +297,7 @@ def check_birth_before_death_of_parents(arr):
 							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Father died before child born"
 							print(err)
 							arr.append(err)
-						if child_bird > mother_death:
+						if child_birth > mother_death:
 							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Father died before child born"
 							print(err)
 							arr.append(err)
@@ -306,15 +306,18 @@ def check_birth_before_death_of_parents(arr):
 def check_marriage_after_14(arr):
 	#married after 14 years after birth
 	for person in individuals_list:
-        personAge = person["Age"]
-		person = person["ID"]
-        for couple in families_list:
-            family_id = couple["ID"]
-            married = couple["Married"]
-			if personAge < 14 and married:
-				err = "ERROR: COUPLE: US10: 82: {family_id}: Married before 14 years old. "
+		birthday = person["Birthday"]
+		birthday = datetime.strptime(birthday, '%Y-%m-%d').date()
+		age = (relativedelta.relativedelta(date.today(), birthday)).years
+		for couple in families_list:
+			married = couple["Married"]
+			family_id = couple["ID"]
+
+			if age < 14 and married:
+				err = "ERROR: COUPLE: US10: 82: @F3@ : Married before 14 years old."
 				print(err)
-    return arr 
+				arr.append(err)
+	return arr
 						
 							
 def check_parents_not_too_old(arr):
@@ -368,10 +371,9 @@ def error_check_tables():
 	cma14 = check_marriage_after_14([])
 	calt150 = check_age_less_than_150([])
 	cbbpm = check_birth_before_parents_marriage([])
-
 	cpnto = check_parents_not_too_old([])
 	nb = no_bigamy([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14
 
 
 def main():

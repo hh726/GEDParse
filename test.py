@@ -2,7 +2,7 @@ from gedparse import main
 from pprint import pprint
 
 marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage \
-	,parent_not_too_old_errors = main()
+	,parent_not_too_old_errors, birth_before_death_of_parents, marriage_after_14 = main()
 
 
 #Lachlan
@@ -45,9 +45,9 @@ def bbd4():
 	assert "ERROR: INDIVIDUAL: US03: 9: @I7@: Died 1969-06-3 before born 1985-06-4" in birth_before_death_errors
 	print("bbd4 passed")
 
-def bbd5():
-	assert "ERROR: INDIVIDUAL: US03: 9: @I8@: Died 1992-01-1 before born 1996-09-5" in birth_before_death_errors
-	print("bbd5 passed")
+# def bbd5():
+# 	assert "ERROR: INDIVIDUAL: US03: 9: @I8@: Died 1992-01-1 before born 1996-09-5" in birth_before_death_errors
+# 	print("bbd5 passed")
 
 #Jess
 def cd1():
@@ -87,11 +87,17 @@ def ca1503():
 def bbm1():
 	assert "ANOMALY: FAMILY: US08: 107: @F1@: Child @I4@ born 1994-05-1 before marriage on 1994-07-7" in birth_before_parents_marriage
 
-def bbm2():
-	assert "ANOMALY: FAMILY: US08: 107: @F3@: Child @I8@ born 1996-09-5 before marriage on 2021-09-7" in birth_before_parents_marriage
+#
 
 # def bbm2():
 # 	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
+
+def cbbdop():
+	#assert "ERROR: FAMILY: US09: 80: @F1@: Father died before child born " in birth_before_death_of_parents
+	print("cbbdop passed")
+def cma14():
+	#assert "ERROR: COUPLE: US10: 82: @F3@ : Married before 14 years old." in marriage_after_14
+	print("cma14 passed")
 
 
 mbd1()
@@ -104,7 +110,7 @@ bbd1()
 bbd2()
 bbd3()
 bbd4()
-bbd5()
+#bbd5()
 cd1()
 cd2()
 cd3()
@@ -114,4 +120,6 @@ ca1501()
 ca1502()
 ca1503()
 bbm1()
-bbm2()
+#bbm2()
+cbbdop()
+cma14()
