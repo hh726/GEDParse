@@ -277,7 +277,46 @@ def check_birth_before_parents_marriage(arr):
 						arr.append(error_msg)
 						print(error_msg)
 	return arr
+def check_birth_before_death_of_parents(arr):
+	for family in families_list:
+		if family['Children'] != '':
+			children = family['Children'].split(' ')
+			for child in children:
+				for child in children:
+					if child != '':
+						father = family["Husband Name"]
+						mother = family["Wife Name"]
+						for person in individuals_list:
+							if perseon["Name"] == father:
+								father_death = person["Death"]
+							if person["Name"] == mother:
+								mother_death = person["Death"]
+							if person["ID"] == child:
+								child_birth = person["Birthday"]
+						if child_birth > father_death:
+							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Father died before child born"
+							print(err)
+							arr.append(err)
+						if child_bird > mother_death:
+							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Father died before child born"
+							print(err)
+							arr.append(err)
+	return arr
 
+def check_marriage_after_14(arr):
+	#married after 14 years after birth
+	for person in individuals_list:
+        personAge = person["Age"]
+		person = person["ID"]
+        for couple in families_list:
+            family_id = couple["ID"]
+            married = couple["Married"]
+			if personAge < 14 and married:
+				err = "ERROR: COUPLE: US10: 82: {family_id}: Married before 14 years old. "
+				print(err)
+    return arr 
+						
+							
 def check_parents_not_too_old(arr):
 	for family in families_list:
 		if family['Children'] != '':
@@ -325,8 +364,11 @@ def error_check_tables():
 	cmbdv = check_marriage_before_divorce([])
 	cdbt = check_dates_before_today([])
 	cbbm = check_birth_before_marriage([])
+	cbbdop = check_birth_before_death_of_parents([])
+	cma14 = check_marriage_after_14([])
 	calt150 = check_age_less_than_150([])
 	cbbpm = check_birth_before_parents_marriage([])
+
 	cpnto = check_parents_not_too_old([])
 	nb = no_bigamy([])
 	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto
