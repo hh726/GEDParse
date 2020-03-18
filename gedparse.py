@@ -298,7 +298,7 @@ def check_parents_not_too_old(arr):
 						print(err)
 						arr.append(err)
 					if mother_age - child_age >= 60:
-						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Father more than 60 years older than child"
+						err = "ERROR: FAMILY: US12: 34: " + family["ID"] + " Mother more than 60 years older than child"
 						print(err)
 						arr.append(err)
 def no_bigamy(arr):
