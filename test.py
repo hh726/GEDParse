@@ -2,7 +2,7 @@ from gedparse import main
 from pprint import pprint
 
 marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage \
-	,parent_not_too_old_errors, birth_before_death_of_parents, marriage_after_14 = main()
+	,parent_not_too_old_errors, birth_before_death_of_parents, marriage_after_14, fewer_than_15_children_errors, male_last_name_errors = main()
 
 
 #Lachlan
@@ -77,20 +77,19 @@ def cd5():
 
 def ca1501():
 	assert "ERROR: INDIVIDUAL: US07: 90: @I10@: More than 150 years old - Birth date 1500-01-1" in age_less_than_150
+	print("ca1501 passed")
 
 def ca1502():
 	assert "ERROR: INDIVIDUAL: US07: 90: @I11@: More than 150 years old - Birth date 1500-02-2" in age_less_than_150
+	print("ca1502 passed")
 
 def ca1503():
 	assert "ERROR: INDIVIDUAL: US07: 90: @I12@: More than 150 years old - Birth date 1500-03-3" in age_less_than_150
+	print("ca1503 passed")
 
 def bbm1():
 	assert "ANOMALY: FAMILY: US08: 107: @F1@: Child @I4@ born 1994-05-1 before marriage on 1994-07-7" in birth_before_parents_marriage
-
-#
-
-# def bbm2():
-# 	"ANOMALY: FAMILY: US08: 107: @F2@: Child @I3@ born 1771-03-7 before marriage on 1970-10-4" in birth_before_parents_marriage
+	print("bbm1 passed")
 
 def cbbdop():
 	#assert "ERROR: FAMILY: US09: 80: @F1@: Father died before child born " in birth_before_death_of_parents
@@ -98,28 +97,28 @@ def cbbdop():
 def cma14():
 	#assert "ERROR: COUPLE: US10: 82: @F3@ : Married before 14 years old." in marriage_after_14
 	print("cma14 passed")
-
-
-mbd1()
-mbd2()
-mbd3()
-dbm1()
-dbm2()
-dbm3()
-bbd1()
-bbd2()
-bbd3()
-bbd4()
-#bbd5()
-cd1()
-cd2()
-cd3()
-cd4()
-cd5()
-ca1501()
-ca1502()
-ca1503()
-bbm1()
-#bbm2()
-cbbdop()
-cma14()
+	
+if __name__ == '__main__':
+	mbd1()
+	mbd2()
+	mbd3()
+	dbm1()
+	dbm2()
+	dbm3()
+	bbd1()
+	bbd2()
+	bbd3()
+	bbd4()
+	#bbd5()
+	cd1()
+	cd2()
+	cd3()
+	cd4()
+	cd5()
+	ca1501()
+	ca1502()
+	ca1503()
+	bbm1()
+	#bbm2()
+	cbbdop()
+	cma14()

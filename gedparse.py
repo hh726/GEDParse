@@ -81,7 +81,7 @@ def check_format(line):
     return 3
 
 #Reads GED file and store input
-with open('testInput2.ged', 'r') as my_file:
+with open('testInputSprint3.ged', 'r') as my_file:
     content = my_file.readlines()
     my_file.close()
 
@@ -277,6 +277,7 @@ def check_birth_before_parents_marriage(arr):
 						arr.append(error_msg)
 						print(error_msg)
 	return arr
+
 def check_birth_before_death_of_parents(arr):
 	for family in families_list:
 		if family['Children'] != '':
@@ -298,7 +299,7 @@ def check_birth_before_death_of_parents(arr):
 							print(err)
 							arr.append(err)
 						if child_birth > mother_death:
-							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Father died before child born"
+							err = "ERROR: FAMILY: US09: 80: " + family["ID"] + " Mother died before child born"
 							print(err)
 							arr.append(err)
 	return arr
@@ -358,7 +359,33 @@ def no_bigamy(arr):
 						print(err)
 						arr.append(err)
 
+def fewer_than_15_siblings():
+	arr = []
+	for family in families_list:
+		num_children = (len(family["Children"].split(" "))) - 1 
+		if(num_children > 15):
+			familyID = family["ID"]
+			err = f"ERROR: FAMILY: US15: 33: {familyID} has more than 15 siblings in the family"
+			print(err)
+			arr.append(err)
+	return arr
 
+def male_last_names():
+	arr = []
+	for family in families_list:
+		husband_ln = family["Husband Name"].split(" ")[1]
+		children = family["Children"].split(" ")
+		if(len(children) > 1):
+			children = children[:-1]
+			for child in children:
+				for person in individuals_list:
+					if(person['ID'] == child and person["Gender"] == 'M'):
+						ln = person["Name"].split(" ")[1]
+						if(ln != husband_ln):
+							err = "ERROR: FAMILY: US16: 35: Male child " + person['ID'] + "'s last name " + ln + " is different from their fathers " + husband_ln
+							print(err)
+							arr.append(err)
+	return arr
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -373,7 +400,9 @@ def error_check_tables():
 	cbbpm = check_birth_before_parents_marriage([])
 	cpnto = check_parents_not_too_old([])
 	nb = no_bigamy([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14
+	ft15c = fewer_than_15_siblings()
+	mln = male_last_names()
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln
 
 
 def main():
