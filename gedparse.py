@@ -387,6 +387,63 @@ def male_last_names():
 							arr.append(err)
 	return arr
 
+def siblings_spacing(arr):
+	for family in families_list:
+		all_children = []
+		children = family["Children"].split(" ")
+		for child in children:
+			if child != '':
+				all_children.append(child)
+		if len(all_children) > 1:
+			for i in range(len(all_children)):
+				for j in range(i+1, len(all_children)):
+					for person in individuals_list:
+						if person["ID"] == all_children[i]:
+							child1 = person["Birthday"]
+							child_id1 = all_children[i]
+						if person["ID"] == all_children[j]:
+							child2 = person["Birthday"]
+							child_id2 = all_children[j]
+					child1birthday = datetime.strptime(child1, '%Y-%m-%d').date()
+					child2birthday = datetime.strptime(child2, '%Y-%m-%d').date()
+					if ((relativedelta.relativedelta(child1birthday, child2birthday)).months < 8) and \
+						((relativedelta.relativedelta(child1birthday, child2birthday)).days < 1):
+						err = f"Error: FAMILY: US13: 15: {child_id1} and {child_id2} born less than 8 months apart"
+						print(err)
+						arr.append(err)
+				
+	return arr
+
+def multiple_births(arr):
+	for family in families_list:
+		all_children = []
+		children = family["Children"].split(" ")
+		for child in children:
+			if child != '':
+				all_children.append(child)
+	family_id = family["ID"]
+	if len(all_children) >= 5:
+		multiple = 0
+		for i in range(len(all_children)):
+			for j in range(i+1, len(all_children)):
+				for person in individuals_list:
+					if person["ID"] == all_children[i]:
+						child1 = person["Birthday"]
+						child_id1 = all_children[i]
+					if person["ID"] == all_children[j]:
+						child2 = person["Birthday"]
+						child_id2 = all_children[j]
+				child1birthday = datetime.strptime(child1, '%Y-%m-%d').date()
+				child2birthday = datetime.strptime(child2, '%Y-%m-%d').date()
+				if ((relativedelta.relativedelta(child1birthday, child2birthday)).days < 1):
+					multiple += 1
+		if multiple >= 5:
+			err = f"Error: FAMILY: US14: 44: {family_id} has 5 child born at once"
+			print(err)
+			arr.append(err)
+	return arr
+
+
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
 	cdbf = check_divorce_before_death([])
@@ -402,7 +459,9 @@ def error_check_tables():
 	nb = no_bigamy([])
 	ft15c = fewer_than_15_siblings()
 	mln = male_last_names()
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln
+	ss = siblings_spacing([])
+	mb = multiple_births([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb
 
 
 def main():
