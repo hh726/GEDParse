@@ -443,6 +443,36 @@ def multiple_births(arr):
 			arr.append(err)
 	return arr
 
+def no_marriages_to_descendants(arr):
+	for person in individuals_list:
+		spouse = person["Spouse"]
+		person_id = person["ID"]
+		for family in families_list:
+			if family['Children'] != '':
+				children = family['Children'].split(' ')
+				for child in children:
+					father = family["Husband Name"]
+					mother = family["Wife Name"]
+					if spouse == father or mother:
+						err = f"Error: FAMILY: US17: {person_id} can't be married to a decesndant"	
+						print(err)		
+						arr.append(err)	
+	return arr
+
+def no_siblings_marriage(arr):
+	for person in individuals_list:
+		spouse = person["Spouse"]
+		person_id = person["ID"]
+		for family in families_list:
+			if family['Children'] != '':
+				children = family['Children'].split(' ')
+				for child in children:
+					if spouse == child:
+						err = f"Error: FAMILY US18: {person_id} can't be married to it's sibling"
+						print(err)
+						arr.append(err)
+		
+				
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -461,7 +491,9 @@ def error_check_tables():
 	mln = male_last_names()
 	ss = siblings_spacing([])
 	mb = multiple_births([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb
+	nmtd = no_marriages_to_descendants([])
+	nsm = no_siblings_marriage([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm
 
 
 def main():

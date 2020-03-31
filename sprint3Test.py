@@ -2,7 +2,7 @@ from gedparse import main
 from pprint import pprint
 
 marriage_before_death_errors, death_before_marriage_errors, birth_before_death_errors, marriage_before_divorce_errors, dates_before_today_errors, birth_before_marriage, age_less_than_150, birth_before_parents_marriage \
-	,parent_not_too_old_errors, birth_before_death_of_parents, marriage_after_14, fewer_than_15_children_errors, male_last_name_errors, sibling_spacing_errors, multiple_birth_errors = main()
+	,parent_not_too_old_errors, birth_before_death_of_parents, marriage_after_14, fewer_than_15_children_errors, male_last_name_errors, sibling_spacing_errors, multiple_birth_errors, no_marriages_to_descendants_errors, no_siblings_marriage_errors = main()
 
 def ft15c():
     assert "ERROR: FAMILY: US15: 33: @F1@ has more than 15 siblings in the family" in fewer_than_15_children_errors
@@ -16,7 +16,12 @@ def sse():
     assert "Error: FAMILY: US13: 15: @I18@ and @I24@ born less than 8 months apart" in sibling_spacing_errors
     print("Test sse passed...")
 
+def nmtd():
+    assert "Error: FAMILY: US17: @I18@ can't be married to a decesndant" in no_marriages_to_descendants_errors
+    print("Test nmtd passed...")
+
 if __name__ == '__main__':
     ft15c()
     mln()
     sse()
+    nmtd()
