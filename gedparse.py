@@ -2,7 +2,7 @@ from prettytable import PrettyTable
 from datetime import datetime, date
 from pprint import pprint
 from dateutil import relativedelta
-
+import sys
 
 #Stores all tags
 ZERO_LEVEL = ["INDI", "FAM", "HEAD", "TRLR", "NOTE"]
@@ -79,11 +79,6 @@ def check_format(line):
     if line[2] == "FAM" or line[2] == "INDI":
         return 2
     return 3
-
-#Reads GED file and store input
-with open('testInputSprint3.ged', 'r') as my_file:
-    content = my_file.readlines()
-    my_file.close()
 
 #Stores the output lines of the parsed file in a list
 def store_parsed_lines(file_content):
@@ -167,27 +162,26 @@ def check_dates_before_today(arr):
             print(err)
             arr.append(err)
     return arr
-    
+
 #Born before marriage
 def check_birth_before_marriage(arr):
-    for person in individuals_list:
-        birth = person["Birthday"]
-        for couple in families_list:
-            family_id = couple["ID"]
-            marriage = couple["Married"]
-            if marriage == "N/A":
-                continue
-            if marriage < birth:
-                err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
-                if(person["Gender"] == "M"):
-                    err = err + f"Husband's birth date {birth} after marriage date {marriage}"
-                else:
-                    err = err + f"Wife's birth date {birth} after marriage date {marriage}"
-                    print(err)
-                    arr.append(err)
-    return arr
-
-
+	for person in individuals_list:
+		birth = person["Birthday"]
+		for couple in families_list:
+			family_id = couple["ID"]
+			marriage = couple["Married"]
+			if marriage == "N/A":
+				continue
+			if person["ID"] == couple["Husband ID"] or person["ID"] == couple["Wife ID"]:
+				if marriage < birth:
+					err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
+					if(person["Gender"] == "M"):
+						err = err + f"Husband's birth date {birth} after marriage date {marriage}"
+					else:
+						err = err + f"Wife's birth date {birth} after marriage date {marriage}"
+						print(err)
+						arr.append(err)
+	return arr
 
 #Birth before death
 def check_birth_before_death(arr):
@@ -448,7 +442,9 @@ def no_marriages_to_descendants(arr):
 		spouse = person["Spouse"]
 		person_id = person["ID"]
 		for family in families_list:
-			if family['Children'] != '':
+			# print(person["Name"])
+			# print(family["Children"])
+			if family['Children'] != '' and family["ID"] == person["Spouse"]:
 				children = family['Children'].split(' ')
 				for child in children:
 					father = family["Husband Name"]
@@ -473,6 +469,106 @@ def no_siblings_marriage(arr):
 						arr.append(err)
 		
 				
+def check_cousin_marriage():
+	arr = []
+	for couple in families_list:
+		Husband_Grandparent_list = []
+		Wife_Grandparent_list = []
+		if(couple["Husband ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Husband ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+		if(couple["Wife ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Wife ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+
+		Husband_Grandparent_list = list(dict.fromkeys(Husband_Grandparent_list))
+		Wife_Grandparent_list = list(dict.fromkeys(Wife_Grandparent_list))
+		common_grandparents = set(Husband_Grandparent_list).intersection(Wife_Grandparent_list)
+		err = "ERROR: FAMILY: US19: Husband " + couple["Husband ID"] +" and Wife " + couple["Wife ID"] + " are first cousins"
+		if(len(common_grandparents) != 0):
+			print(err)
+			arr.append(err)
+		return arr
+
+def check_neice_nephew_aunt_uncle():
+	arr = []
+	for couple in families_list:
+		Husband_Parent_list = []
+		Husband_Grandparent_list = []
+		Wife_Parent_list = []
+		Wife_Grandparent_list = []
+
+		if(couple["Husband ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Husband ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							Husband_Parent_list.append(person["Child"])
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+		if(couple["Wife ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Wife ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							Wife_Parent_list.append(person["Child"])
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+										
+		Husband_Parent_list = list(dict.fromkeys(Husband_Parent_list))
+		Husband_Grandparent_list = list(dict.fromkeys(Husband_Grandparent_list))		
+		Wife_Parent_list = list(dict.fromkeys(Wife_Parent_list))
+		Wife_Grandparent_list = list(dict.fromkeys(Wife_Grandparent_list))
+
+		if "N/A" in Husband_Parent_list:
+			Husband_Parent_list.remove("N/A")
+		if "N/A" in Husband_Grandparent_list:
+			Husband_Grandparent_list.remove("N/A")
+		if "N/A" in Wife_Parent_list:
+			Wife_Parent_list.remove("N/A")
+		if "N/A" in Wife_Grandparent_list:
+			Wife_Grandparent_list.remove("N/A")	
+
+		common_fam1 = set(Husband_Grandparent_list).intersection(Wife_Parent_list)
+		common_fam2 = set(Wife_Grandparent_list).intersection(Husband_Parent_list)
+
+		err = "ERROR: FAMILY: US20: Husband " + couple["Husband ID"] +" and Wife " + couple["Wife ID"] + " are Aunt/Uncle married to their Niece/Nephew"
+		if(len(common_fam1) != 0 or len(common_fam2) != 0):
+			print(err)
+			arr.append(err)
+	return arr
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -493,11 +589,21 @@ def error_check_tables():
 	mb = multiple_births([])
 	nmtd = no_marriages_to_descendants([])
 	nsm = no_siblings_marriage([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm
-
+	ccm = check_cousin_marriage()
+	cnnau = check_neice_nephew_aunt_uncle()
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau
 
 def main():
-	#Writes parsed inputs to a file
+	if(len(sys.argv) != 2):
+		print("Usage: 'python3 file.ged'")
+		return -1
+
+	#Reads GED file and store input
+	# with open('testInputSprint3.ged', 'r') as my_file:
+	with open(sys.argv[1], 'r') as my_file:
+		content = my_file.readlines()
+		my_file.close()
+
 	with open('results.txt', 'w') as result_file:
 	    for line in content:
 	        result_file.write(f"--> {line.rstrip()} \n")
@@ -618,6 +724,8 @@ def main():
 
 	print(individual_table)
 	print(families_table)
-	return error_check_tables()
+	error_check_tables()
+	# return error_check_tables()
 
-# main()
+if __name__ == '__main__':	
+	main()
