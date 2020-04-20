@@ -2,7 +2,7 @@ from prettytable import PrettyTable
 from datetime import datetime, date
 from pprint import pprint
 from dateutil import relativedelta
-
+import sys
 
 #Stores all tags
 ZERO_LEVEL = ["INDI", "FAM", "HEAD", "TRLR", "NOTE"]
@@ -79,11 +79,6 @@ def check_format(line):
     if line[2] == "FAM" or line[2] == "INDI":
         return 2
     return 3
-
-#Reads GED file and store input
-with open('testInputSprint3.ged', 'r') as my_file:
-    content = my_file.readlines()
-    my_file.close()
 
 #Stores the output lines of the parsed file in a list
 def store_parsed_lines(file_content):
@@ -167,27 +162,26 @@ def check_dates_before_today(arr):
             print(err)
             arr.append(err)
     return arr
-    
+
 #Born before marriage
 def check_birth_before_marriage(arr):
-    for person in individuals_list:
-        birth = person["Birthday"]
-        for couple in families_list:
-            family_id = couple["ID"]
-            marriage = couple["Married"]
-            if marriage == "N/A":
-                continue
-            if marriage < birth:
-                err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
-                if(person["Gender"] == "M"):
-                    err = err + f"Husband's birth date {birth} after marriage date {marriage}"
-                else:
-                    err = err + f"Wife's birth date {birth} after marriage date {marriage}"
-                    print(err)
-                    arr.append(err)
-    return arr
-
-
+	for person in individuals_list:
+		birth = person["Birthday"]
+		for couple in families_list:
+			family_id = couple["ID"]
+			marriage = couple["Married"]
+			if marriage == "N/A":
+				continue
+			if person["ID"] == couple["Husband ID"] or person["ID"] == couple["Wife ID"]:
+				if marriage < birth:
+					err = f"ERROR: FAMILY: US02: 24:{family_id}:  "
+					if(person["Gender"] == "M"):
+						err = err + f"Husband's birth date {birth} after marriage date {marriage}"
+					else:
+						err = err + f"Wife's birth date {birth} after marriage date {marriage}"
+						print(err)
+						arr.append(err)
+	return arr
 
 #Birth before death
 def check_birth_before_death(arr):
@@ -387,6 +381,10 @@ def male_last_names():
 							arr.append(err)
 	return arr
 
+# def check_cousin_marriage():
+# 	arr = []
+# 	for family in 
+
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
 	cdbf = check_divorce_before_death([])
@@ -404,9 +402,17 @@ def error_check_tables():
 	mln = male_last_names()
 	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln
 
-
 def main():
-	#Writes parsed inputs to a file
+	if(len(sys.argv) != 2):
+		print("Usage: 'python3 file.ged'")
+		return -1
+
+	#Reads GED file and store input
+	# with open('testInputSprint3.ged', 'r') as my_file:
+	with open(sys.argv[1], 'r') as my_file:
+		content = my_file.readlines()
+		my_file.close()
+
 	with open('results.txt', 'w') as result_file:
 	    for line in content:
 	        result_file.write(f"--> {line.rstrip()} \n")
@@ -527,6 +533,8 @@ def main():
 
 	print(individual_table)
 	print(families_table)
-	return error_check_tables()
+	error_check_tables()
+	# return error_check_tables()
 
-# main()
+if __name__ == '__main__':	
+	main()
