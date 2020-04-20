@@ -449,10 +449,14 @@ def no_marriages_to_descendants(arr):
 				for child in children:
 					father = family["Husband Name"]
 					mother = family["Wife Name"]
-					if spouse == father or mother:
-						err = f"Error: FAMILY: US17: {person_id} can't be married to a decesndant"	
-						print(err)		
-						arr.append(err)	
+					for couple in families_list:
+						family_id = couple["ID"]
+						married = couple["Married"]
+						if child == married:
+							if spouse == father or mother:
+								err = f"Error: FAMILY: US17: {person_id} can't be married to a decesndant"	
+								print(err)		
+								arr.append(err)	
 	return arr
 
 def no_siblings_marriage(arr):
