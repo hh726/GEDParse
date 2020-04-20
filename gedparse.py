@@ -593,16 +593,21 @@ def error_check_tables():
 	cnnau = check_neice_nephew_aunt_uncle()
 	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau
 
-def main():
-	if(len(sys.argv) != 2):
-		print("Usage: 'python3 file.ged'")
-		return -1
+def main(testFile):
+	if(testFile != ""):
+		#Reads GED file and store input
+		# with open('testInputSprint3.ged', 'r') as my_file:
+		with open(testFile, 'r') as my_file:
+			content = my_file.readlines()
+			my_file.close()
+	else:
+		if(len(sys.argv) != 2):
+			print("Usage: 'python3 gedparse.py file.ged'")
+			return -1
 
-	#Reads GED file and store input
-	# with open('testInputSprint3.ged', 'r') as my_file:
-	with open(sys.argv[1], 'r') as my_file:
-		content = my_file.readlines()
-		my_file.close()
+		with open(sys.argv[1], 'r') as my_file:
+			content = my_file.readlines()
+			my_file.close()
 
 	with open('results.txt', 'w') as result_file:
 	    for line in content:
@@ -724,8 +729,9 @@ def main():
 
 	print(individual_table)
 	print(families_table)
-	error_check_tables()
+	print("here")
+	return error_check_tables()
 	# return error_check_tables()
 
-if __name__ == '__main__':	
-	main()
+if __name__ == '__main__':
+	main("")
