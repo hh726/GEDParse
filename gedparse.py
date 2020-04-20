@@ -729,7 +729,6 @@ def main(testFile):
 
 	print(individual_table)
 	print(families_table)
-	print("here")
 	return error_check_tables()
 	# return error_check_tables()
 
