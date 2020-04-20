@@ -381,9 +381,106 @@ def male_last_names():
 							arr.append(err)
 	return arr
 
-# def check_cousin_marriage():
-# 	arr = []
-# 	for family in 
+def check_cousin_marriage():
+	arr = []
+	for couple in families_list:
+		Husband_Grandparent_list = []
+		Wife_Grandparent_list = []
+		if(couple["Husband ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Husband ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+		if(couple["Wife ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Wife ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+
+		Husband_Grandparent_list = list(dict.fromkeys(Husband_Grandparent_list))
+		Wife_Grandparent_list = list(dict.fromkeys(Wife_Grandparent_list))
+		common_grandparents = set(Husband_Grandparent_list).intersection(Wife_Grandparent_list)
+		err = "ERROR: FAMILY: US19: Husband " + couple["Husband ID"] +" and Wife " + couple["Wife ID"] + " are first cousins"
+		if(len(common_grandparents) != 0):
+			print(err)
+			arr.append(err)
+		return arr
+
+def check_neice_nephew_aunt_uncle():
+	arr = []
+	for couple in families_list:
+		Husband_Parent_list = []
+		Husband_Grandparent_list = []
+		Wife_Parent_list = []
+		Wife_Grandparent_list = []
+
+		if(couple["Husband ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Husband ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							Husband_Parent_list.append(person["Child"])
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Husband_Grandparent_list.append(parent["Child"])
+		if(couple["Wife ID"] != "N/A"):
+			for person in individuals_list:
+				if(person["ID"] == couple["Wife ID"]):
+					for parentCouple in families_list:
+						if(parentCouple["ID"] == person["Child"]):
+							Wife_Parent_list.append(person["Child"])
+							if(parentCouple["Husband ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Husband ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+							if(parentCouple["Wife ID"] != "N/A"):
+								for parent in individuals_list:
+									if(parent["ID"] == parentCouple["Wife ID"]):
+										Wife_Grandparent_list.append(parent["Child"])
+										
+		Husband_Parent_list = list(dict.fromkeys(Husband_Parent_list))
+		Husband_Grandparent_list = list(dict.fromkeys(Husband_Grandparent_list))		
+		Wife_Parent_list = list(dict.fromkeys(Wife_Parent_list))
+		Wife_Grandparent_list = list(dict.fromkeys(Wife_Grandparent_list))
+
+		if "N/A" in Husband_Parent_list:
+			Husband_Parent_list.remove("N/A")
+		if "N/A" in Husband_Grandparent_list:
+			Husband_Grandparent_list.remove("N/A")
+		if "N/A" in Wife_Parent_list:
+			Wife_Parent_list.remove("N/A")
+		if "N/A" in Wife_Grandparent_list:
+			Wife_Grandparent_list.remove("N/A")	
+
+		common_fam1 = set(Husband_Grandparent_list).intersection(Wife_Parent_list)
+		common_fam2 = set(Wife_Grandparent_list).intersection(Husband_Parent_list)
+
+		err = "ERROR: FAMILY: US20: Husband " + couple["Husband ID"] +" and Wife " + couple["Wife ID"] + " are Aunt/Uncle married to their Niece/Nephew"
+		if(len(common_fam1) != 0 or len(common_fam2) != 0):
+			print(err)
+			arr.append(err)
+	return arr
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -400,7 +497,9 @@ def error_check_tables():
 	nb = no_bigamy([])
 	ft15c = fewer_than_15_siblings()
 	mln = male_last_names()
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln
+	ccm = check_cousin_marriage()
+	cnnau = check_neice_nephew_aunt_uncle()
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ccm, cnnau
 
 def main():
 	if(len(sys.argv) != 2):
