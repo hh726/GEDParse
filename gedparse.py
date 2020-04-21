@@ -588,6 +588,22 @@ def unique_name_and_birth(arr):
 			unique.append(nameAndDOB)		
 	return arr
 
+def unique_spouse_and_marriage_date(arr):
+	uniqueMarriage = []
+	uniqueName = []
+	for family in families_list:
+		wife = family["Husband Name"]
+		husband = family["Wife Name"]
+		wifeAndHusband = " ".join(husband + wife)
+		marriage = datetime.strptime(family["Married"], '%Y-%m-%d').date()
+		if marriage in uniqueMarriage and wifeAndHusband in uniqueName:
+			err = "ERROR: FAM: US24: " + family["ID"] + " does not have unique spouse names and marriage date"
+			print(err)
+			arr.append(err)
+		else:
+			uniqueMarriage.append(marriage)
+			uniqueName.append(wifeAndHusband)
+	return arr
 
 
 def error_check_tables():
@@ -612,7 +628,8 @@ def error_check_tables():
 	ccm = check_cousin_marriage()
 	cnnau = check_neice_nephew_aunt_uncle()
 	unab = unique_name_and_birth([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau, unab
+	usamd = unique_spouse_and_marriage_date([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau, unab, usamd
 
 def main(testFile):
 	if(testFile != ""):

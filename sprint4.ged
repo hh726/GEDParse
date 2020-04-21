@@ -32,9 +32,9 @@
 1 FAMS @F1@
 1 FAMC @F3@
 0 @I3@ INDI
-1 NAME Jeff /Goy/
-2 GIVN Jeff
-2 SURN Goy
+1 NAME Lachlan /Mountjoy/
+2 GIVN Lachlan
+2 SURN MountJoy
 2 _MARNM Mountjoy
 1 SEX M
 1 BIRT
@@ -42,9 +42,9 @@
 1 FAMS @F2@
 1 FAMC @F4@
 0 @I4@ INDI
-1 NAME Karen /York/
-2 GIVN Karen
-2 SURN York
+1 NAME Lachlan /Mountjoy/
+2 GIVN Lachlan
+2 SURN Mountjoy
 2 _MARNM Mountjoy
 1 SEX F
 1 BIRT
@@ -216,7 +216,7 @@
 1 CHIL @I9@
 1 CHIL @I13@
 1 MARR
-2 DATE 9 SEP 1997
+2 DATE 4 JUN 2019
 1 _CURRENT Y
 0 @F3@ FAM
 1 HUSB @I7@

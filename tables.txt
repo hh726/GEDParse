@@ -3,8 +3,8 @@
 +-------+--------------------+--------+------------+-----+-------+------------+-------+--------+
 |  @I1@ | Lachlan /Mountjoy/ |   M    | 1999-01-5  |  21 |  True |     NA     |  @F2@ |  @F1@  |
 |  @I2@ | Lachlan /Mountjoy/ |   F    | 1999-01-5  |  21 |  True |     NA     |  @F3@ |  @F1@  |
-|  @I3@ |     Jeff /Goy/     |   M    | 1967-10-11 |  52 |  True |     NA     |  @F4@ |  @F2@  |
-|  @I4@ |    Karen /York/    |   F    | 1967-10-11 |  52 |  True |     NA     |  @F5@ |  @F2@  |
+|  @I3@ | Lachlan /Mountjoy/ |   M    | 1967-10-11 |  52 |  True |     NA     |  @F4@ |  @F2@  |
+|  @I4@ | Lachlan /Mountjoy/ |   F    | 1967-10-11 |  52 |  True |     NA     |  @F5@ |  @F2@  |
 |  @I5@ |    Keith /Goy/     |   M    | 1940-06-2  |  79 | False | 2006-03-8  |  @F6@ |  @F4@  |
 |  @I6@ |     Rae /Goy/      |   F    | 1944-08-9  |  75 |  True |     NA     |  N/A  |  @F4@  |
 |  @I7@ |     Ash /Goy/      |   M    | 1968-08-14 |  51 |  True |     NA     |  @F4@ |  @F8@  |
@@ -24,7 +24,7 @@
 |   ID  |  Married   |  Divorced | Husband ID |    Husband Name    | Wife ID |     Wife Name      |     Children     |
 +-------+------------+-----------+------------+--------------------+---------+--------------------+------------------+
 |  @F1@ | 2019-06-4  |    N/A    |    @I1@    | Lachlan /Mountjoy/ |   @I2@  | Lachlan /Mountjoy/ |                  |
-|  @F2@ | 1997-09-9  |    N/A    |    @I3@    |     Jeff /Goy/     |   @I4@  |    Karen /York/    | @I1@ @I9@ @I13@  |
+|  @F2@ | 2019-06-4  |    N/A    |    @I3@    | Lachlan /Mountjoy/ |   @I4@  | Lachlan /Mountjoy/ | @I1@ @I9@ @I13@  |
 |  @F3@ | 1996-10-3  |    N/A    |    @I7@    |     Ash /Goy/      |   @I8@  |     Sue /Mac/      |      @I2@        |
 |  @F4@ | 1964-07-22 |    N/A    |    @I5@    |    Keith /Goy/     |   @I6@  |     Rae /Goy/      |    @I3@ @I7@     |
 |  @F5@ | 1965-12-16 | 1970-07-9 |   @I10@    |     Al /Burtt/     |  @I12@  |    Alice /York/    |      @I4@        |
