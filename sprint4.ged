@@ -22,13 +22,13 @@
 1 FAMS @F1@
 1 FAMC @F2@
 0 @I2@ INDI
-1 NAME Shelby /Goy/
-2 GIVN Shelby
-2 SURN Goy
-2 _MARNM Goy
+1 NAME Lachlan /Mountjoy/
+2 GIVN Lachlan
+2 SURN Mountjoy
+2 _MARNM Mountjoy
 1 SEX F
 1 BIRT
-2 DATE 5 FEB 1999
+2 DATE 5 JAN 1999
 1 FAMS @F1@
 1 FAMC @F3@
 0 @I3@ INDI

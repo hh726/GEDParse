@@ -573,6 +573,22 @@ def check_neice_nephew_aunt_uncle():
 			print(err)
 			arr.append(err)
 	return arr
+def unique_name_and_birth(arr):
+	unique = []
+	for person in individuals_list:
+		name = person["Name"]
+		birthday = person["Birthday"]
+		#birthday = datetime.strptime(birthday, '%Y-%m-%d').date()
+		nameAndDOB = " ".join(name + birthday)
+		if nameAndDOB in unique:
+			err = "ERROR: INDI: US23: " + person["ID"] + " does not have a unique DOB and Name"
+			print(err)
+			arr.append(err)			
+		else: 
+			unique.append(nameAndDOB)		
+	return arr
+
+
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -595,7 +611,8 @@ def error_check_tables():
 	nsm = no_siblings_marriage([])
 	ccm = check_cousin_marriage()
 	cnnau = check_neice_nephew_aunt_uncle()
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau
+	unab = unique_name_and_birth([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau, unab
 
 def main(testFile):
 	if(testFile != ""):
