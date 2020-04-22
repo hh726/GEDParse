@@ -2,6 +2,7 @@ from prettytable import PrettyTable
 from datetime import datetime, date
 from pprint import pprint
 from dateutil import relativedelta
+import collections
 import sys
 
 #Stores all tags
@@ -605,6 +606,49 @@ def unique_spouse_and_marriage_date(arr):
 			uniqueName.append(wifeAndHusband)
 	return arr
 
+def correct_gender_for_role(arr):
+	arr = []
+	for family in families_list:
+		husband = family["Husband ID"]
+		wife = family["Wife ID"]
+
+		for person in individuals_list:
+			if wife == person["ID"]:
+				
+				if person["Gender"] != "F":
+					err = "ERROR: FAM: US21 " + person["Name"] + " in " + family["ID"] + " family does not have correct gender"
+					print(err)
+					arr.append(err)
+			if husband == person["ID"]:
+				
+				if person["Gender"] != "M":
+					err = "ERROR: FAM: US21 " + person["Name"] + " in " + family["ID"] + "family does not have correct gender"
+					print(err)
+					arr.append(err)
+	return arr
+
+def unique_ids(arr):
+	family_ids = []
+	people_ids = []
+	family_duplicates = []
+	people_duplicates = []
+	for family in families_list:
+		family_ids.append(family["ID"])
+		family_duplicates = ([item for item, count in collections.Counter(family_ids).items() if count > 1])
+	for person in individuals_list:
+		people_ids.append(person["ID"])
+		people_duplicates = ([item for item, count in collections.Counter(people_ids).items() if count > 1])
+
+
+	for dup in family_duplicates:
+		err = "ERROR: FAM: US22 " + dup +" is a duplicated family ID"
+		print(err)
+		arr.append(err)
+	for dup in people_duplicates:
+		err = "ERROR: INDI: US22 " + dup +" is a duplicated individual ID"
+		print(err)
+		arr.append(err)
+	return arr
 
 def error_check_tables():
 	cmbd = check_marriage_before_death([])
@@ -629,7 +673,10 @@ def error_check_tables():
 	cnnau = check_neice_nephew_aunt_uncle()
 	unab = unique_name_and_birth([])
 	usamd = unique_spouse_and_marriage_date([])
-	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau, unab, usamd
+	cgfr = correct_gender_for_role([])
+	ui = unique_ids([])
+	return cmbd, cdbf, cbbd, cmbdv, cdbt, cbbm, calt150, cbbpm, cpnto, \
+		cbbdop, cma14, ft15c, mln, ss, mb, nmtd, nsm, ccm, cnnau, unab, usamd, cgfr, ui
 
 def main(testFile):
 	if(testFile != ""):
